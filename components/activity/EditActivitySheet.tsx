@@ -39,7 +39,7 @@ export function EditActivitySheet({ open, onClose, activity, mode }: Props) {
     })(),
     start_time: activity.start_time ?? "",
     end_time: activity.end_time ?? "",
-    category: activity.category ?? "sightseeing",
+    category: (activity.category ?? "sightseeing") as string,
   });
   const [saving, setSaving] = useState(false);
 
