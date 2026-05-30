@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    serverActions: { allowedOrigins: ["localhost:3000", "10.100.102.14:3000"] },
+    serverActions: { allowedOrigins: ["localhost:3000", "10.100.102.14:3000", "norway-travel-app.vercel.app"] },
   },
 };
 

@@ -1,9 +1,8 @@
 "use client";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Loader2, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 type AuthMode = "login" | "signup" | "magic";
@@ -15,7 +14,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
-  const router = useRouter();
+  const [success, setSuccess] = useState(false);
 
   async function handleMagicLink(e: React.FormEvent) {
     e.preventDefault();
@@ -24,11 +23,11 @@ export default function LoginPage() {
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/` },
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
     if (error) setMessage({ text: error.message, ok: false });
-    else setMessage({ text: "Check your email for the login link!", ok: true });
+    else setMessage({ text: "✉️ Check your email for the login link!", ok: true });
   }
 
   async function handleEmailPassword(e: React.FormEvent) {
@@ -43,17 +42,18 @@ export default function LoginPage() {
         : await supabase.auth.signUp({
             email,
             password,
-            options: { emailRedirectTo: `${window.location.origin}/` },
+            options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
           });
 
     setLoading(false);
     if (error) {
       setMessage({ text: error.message, ok: false });
     } else if (mode === "login") {
-      router.push("/");
-      router.refresh();
+      // Full page reload so the middleware picks up the new session cookies
+      setSuccess(true);
+      setTimeout(() => { window.location.href = "/"; }, 1200);
     } else {
-      setMessage({ text: "Account created! Check your email to confirm.", ok: true });
+      setMessage({ text: "✅ Account created! Check your email to confirm.", ok: true });
     }
   }
 
@@ -149,12 +149,30 @@ export default function LoginPage() {
             </motion.div>
           )}
 
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex items-center gap-3 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700 rounded-2xl px-4 py-3"
+            >
+              <CheckCircle2 className="h-6 w-6 text-emerald-600 shrink-0" />
+              <div>
+                <p className="font-semibold text-emerald-700 dark:text-emerald-400">
+                  Login successful! 🎉
+                </p>
+                <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-0.5">
+                  Redirecting…
+                </p>
+              </div>
+            </motion.div>
+          )}
+
           <Button
             type="submit"
             size="lg"
             variant="norway"
             className="w-full"
-            disabled={loading}
+            disabled={loading || success}
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             {mode === "magic"
