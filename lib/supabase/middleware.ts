@@ -1,8 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import type { CookieOptions } from "@supabase/ssr";
-
-type CookieItem = { name: string; value: string; options?: CookieOptions };
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -15,10 +12,8 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet: CookieItem[]) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
@@ -28,16 +23,24 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
+  // Refresh the session token on every request
   const { data: { user } } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isAuthRoute = pathname.startsWith("/(auth)") || pathname === "/login";
-  const isApiRoute = pathname.startsWith("/api");
-  const isPublicRoute = isAuthRoute || isApiRoute || pathname === "/";
+  const isLoginPage = pathname === "/login";
+  const isPublic = pathname.startsWith("/api") || pathname === "/auth/callback";
 
-  if (!user && !isPublicRoute) {
+  // Not logged in + trying to access a protected page → redirect to login
+  if (!user && !isLoginPage && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Already logged in + on login page → redirect to homepage
+  if (user && isLoginPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 
