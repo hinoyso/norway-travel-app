@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Activity } from "@/lib/types";

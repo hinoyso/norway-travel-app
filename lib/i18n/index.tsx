@@ -1,8 +1,7 @@
 "use client";
 import React, { createContext, useContext, useEffect } from "react";
 import { parseISO, isToday, isTomorrow, format } from "date-fns";
-import { he as heLocale } from "date-fns/locale/he";
-import { nb as nbLocale } from "date-fns/locale/nb";
+import { he as heLocale, nb as nbLocale } from "date-fns/locale";
 import { useTripStore, Language } from "@/store/tripStore";
 
 const T = {
