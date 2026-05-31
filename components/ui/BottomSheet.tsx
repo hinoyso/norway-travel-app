@@ -15,10 +15,13 @@ export function BottomSheet({ open, onClose, title, children }: BottomSheetProps
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Lock the app's scroll container (not body — body isn't the scroller in the app-shell layout)
   useEffect(() => {
-    if (open) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
+    const scroller = document.querySelector<HTMLElement>(".app-scroll");
+    if (!scroller) return;
+    if (open) scroller.style.overflow = "hidden";
+    else scroller.style.overflow = "";
+    return () => { scroller.style.overflow = ""; };
   }, [open]);
 
   if (!mounted) return null;

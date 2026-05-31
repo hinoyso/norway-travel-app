@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TripDay } from "@/lib/types";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Button } from "@/components/ui/button";
@@ -22,12 +22,26 @@ export function AddDaySheet({ open, onClose, tripId, suggestedDayNumber, suggest
   const [date, setDate] = useState(suggestedDate ?? "");
   const [city, setCity] = useState("");
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Refresh suggested values each time the sheet is opened
+  useEffect(() => {
+    if (open) {
+      setDayNumber(String(suggestedDayNumber));
+      setDate(suggestedDate ?? "");
+      setError(null);
+    }
+  }, [open, suggestedDayNumber, suggestedDate]);
 
   async function handleSave() {
-    if (!date || !city.trim()) return;
+    setError(null);
+    if (!date || !city.trim()) {
+      setError(!date ? t.crud.date : t.crud.city);
+      return;
+    }
     setSaving(true);
     const supabase = createClient();
-    const { data, error } = await supabase
+    const { data, error: dbError } = await supabase
       .from("trip_days")
       .insert({
         trip_id: tripId,
@@ -40,10 +54,14 @@ export function AddDaySheet({ open, onClose, tripId, suggestedDayNumber, suggest
       .single();
 
     setSaving(false);
-    if (!error && data) {
+    if (dbError) {
+      setError(dbError.message);
+      return;
+    }
+    if (data) {
       addDay(data as TripDay);
-      // reset for next time
       setCity("");
+      setError(null);
       onClose();
     }
   }
@@ -79,6 +97,12 @@ export function AddDaySheet({ open, onClose, tripId, suggestedDayNumber, suggest
             placeholder={t.crud.city}
           />
         </div>
+        {error && (
+          <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+
         <div className="flex gap-3 pt-1">
           <Button variant="outline" size="lg" className="flex-1 text-base" onClick={onClose}>
             {t.crud.cancel}
