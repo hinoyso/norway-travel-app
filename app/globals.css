@@ -88,13 +88,6 @@
     padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
   }
 
-  /* Keep the bottom nav rock-solid on mobile (avoids repaint jank during scroll) */
-  .bottom-nav-fixed {
-    transform: translateZ(0);
-    will-change: transform;
-    backface-visibility: hidden;
-  }
-
   .min-tap {
     min-height: 44px;
     min-width: 44px;

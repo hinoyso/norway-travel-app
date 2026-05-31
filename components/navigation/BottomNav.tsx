@@ -1,4 +1,6 @@
 "use client";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, CalendarDays, Map, Settings } from "lucide-react";
@@ -9,6 +11,9 @@ import { useT } from "@/lib/i18n";
 export function BottomNav() {
   const pathname = usePathname();
   const { t } = useT();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const NAV_ITEMS = [
     { href: "/", label: t.nav.home, icon: Home },
@@ -17,10 +22,10 @@ export function BottomNav() {
     { href: "/settings", label: t.nav.settings, icon: Settings },
   ];
 
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 safe-bottom bottom-nav-fixed">
+  const nav = (
+    <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
       <div className="mx-auto max-w-lg">
-        <div className="bg-background/95 border-t border-border px-2 pt-2 pb-3">
+        <div className="bg-background border-t border-border px-2 pt-2 pb-3">
           <div className="flex items-center justify-around">
             {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
               const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -58,4 +63,9 @@ export function BottomNav() {
       </div>
     </nav>
   );
+
+  // Render into document.body so no transformed ancestor (framer-motion, etc.)
+  // can turn `position: fixed` into `position: absolute` and let it scroll away.
+  if (!mounted) return null;
+  return createPortal(nav, document.body);
 }
