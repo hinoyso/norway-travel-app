@@ -70,6 +70,7 @@ const T = {
       activityName: "Activity name", city: "City", notes: "Notes",
       editDay: "Edit Day", editActivity: "Edit Activity", newActivity: "New Activity",
       deleted: "Deleted", saved: "Saved",
+      addDay: "Add Day", newDay: "New Day", date: "Date", dayNumber: "Day number",
     },
   },
   he: {
@@ -137,6 +138,7 @@ const T = {
       activityName: "שם פעילות", city: "עיר", notes: "הערות",
       editDay: "עריכת יום", editActivity: "עריכת פעילות", newActivity: "פעילות חדשה",
       deleted: "נמחק", saved: "נשמר",
+      addDay: "הוסף יום", newDay: "יום חדש", date: "תאריך", dayNumber: "מספר יום",
     },
   },
   no: {
@@ -204,6 +206,7 @@ const T = {
       activityName: "Aktivitetsnavn", city: "By", notes: "Notater",
       editDay: "Rediger dag", editActivity: "Rediger aktivitet", newActivity: "Ny aktivitet",
       deleted: "Slettet", saved: "Lagret",
+      addDay: "Legg til dag", newDay: "Ny dag", date: "Dato", dayNumber: "Dagnummer",
     },
   },
 };

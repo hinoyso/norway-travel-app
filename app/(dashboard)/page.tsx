@@ -5,11 +5,13 @@ import { DayCard } from "@/components/trip/DayCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Upload, CalendarDays, Phone, ChevronDown, ChevronUp } from "lucide-react";
+import { Upload, CalendarDays, Phone, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useTripStore } from "@/store/tripStore";
 import { useT } from "@/lib/i18n";
+import { AddDaySheet } from "@/components/trip/AddDaySheet";
+import { parseISO, addDays as addDaysFn, format } from "date-fns";
 
 function HomeSkeletons() {
   return (
@@ -66,6 +68,15 @@ export default function HomePage() {
   const { t } = useT();
   const { trip, days, loading, error } = useTrip();
   const { activities } = useTripStore();
+  const [addDayOpen, setAddDayOpen] = useState(false);
+
+  const maxDayNumber = days.reduce((m, d) => Math.max(m, d.day_number), 0);
+  const lastDate = days.length
+    ? days.reduce((m, d) => (d.date > m ? d.date : m), days[0].date)
+    : "";
+  const suggestedDate = lastDate
+    ? format(addDaysFn(parseISO(lastDate), 1), "yyyy-MM-dd")
+    : "";
 
   const activityCounts: Record<string, number> = {};
   days.forEach((day) => {
@@ -119,6 +130,25 @@ export default function HomePage() {
             />
           ))}
         </div>
+
+        {/* Add a day manually */}
+        <button
+          onClick={() => setAddDayOpen(true)}
+          className="w-full flex items-center justify-center gap-2 py-3.5 mt-3 rounded-2xl border-2 border-dashed border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+        >
+          <Plus className="h-5 w-5" />
+          <span className="text-sm font-semibold">{t.crud.addDay}</span>
+        </button>
+
+        {trip && (
+          <AddDaySheet
+            open={addDayOpen}
+            onClose={() => setAddDayOpen(false)}
+            tripId={trip.id}
+            suggestedDayNumber={maxDayNumber + 1}
+            suggestedDate={suggestedDate}
+          />
+        )}
 
         {days.length === 0 && (
           <div className="text-center py-10">

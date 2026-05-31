@@ -24,6 +24,7 @@ interface TripState {
   addActivity: (dayId: string, activity: Activity) => void;
   updateDay: (day: TripDay) => void;
   deleteDay: (dayId: string) => void;
+  addDay: (day: TripDay) => void;
 }
 
 export const useTripStore = create<TripState>()(
@@ -75,6 +76,10 @@ export const useTripStore = create<TripState>()(
         set((s) => ({
           days: s.days.filter((d) => d.id !== dayId),
           activities: Object.fromEntries(Object.entries(s.activities).filter(([k]) => k !== dayId)),
+        })),
+      addDay: (day) =>
+        set((s) => ({
+          days: [...s.days, day].sort((a, b) => a.day_number - b.day_number),
         })),
     }),
     {
