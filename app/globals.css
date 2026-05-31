@@ -88,6 +88,20 @@
     padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
   }
 
+  /* App-shell: full viewport height, only the content area scrolls.
+     This keeps the bottom nav pinned in iOS standalone (PWA) mode where
+     whole-document scrolling causes fixed elements to bounce. */
+  .app-shell {
+    height: 100vh;        /* fallback */
+    height: 100dvh;       /* dynamic viewport — adjusts for mobile toolbars */
+    overflow: hidden;
+  }
+
+  .app-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
   .min-tap {
     min-height: 44px;
     min-width: 44px;

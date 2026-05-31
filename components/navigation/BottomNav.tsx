@@ -1,6 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, CalendarDays, Map, Settings } from "lucide-react";
@@ -11,9 +9,6 @@ import { useT } from "@/lib/i18n";
 export function BottomNav() {
   const pathname = usePathname();
   const { t } = useT();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
 
   const NAV_ITEMS = [
     { href: "/", label: t.nav.home, icon: Home },
@@ -22,50 +17,43 @@ export function BottomNav() {
     { href: "/settings", label: t.nav.settings, icon: Settings },
   ];
 
-  const nav = (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
-      <div className="mx-auto max-w-lg">
-        <div className="bg-background border-t border-border px-2 pt-2 pb-3">
-          <div className="flex items-center justify-around">
-            {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-              const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={cn(
-                    "flex flex-col items-center gap-1.5 px-5 py-2 rounded-xl transition-colors min-tap",
-                    isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                  )}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  <div className="relative">
-                    {isActive && (
-                      <motion.div
-                        layoutId="nav-indicator"
-                        className="absolute inset-0 -m-2 bg-primary/10 rounded-lg"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
-                      />
-                    )}
-                    <Icon
-                      className={cn("h-6 w-6 relative z-10 transition-transform", isActive && "scale-110")}
-                      strokeWidth={isActive ? 2.5 : 1.8}
+  return (
+    <nav className="shrink-0 safe-bottom bg-background border-t border-border">
+      <div className="mx-auto max-w-lg px-2 pt-2 pb-2">
+        <div className="flex items-center justify-around">
+          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+            const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "flex flex-col items-center gap-1.5 px-5 py-2 rounded-xl transition-colors min-tap",
+                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                )}
+                aria-current={isActive ? "page" : undefined}
+              >
+                <div className="relative">
+                  {isActive && (
+                    <motion.div
+                      layoutId="nav-indicator"
+                      className="absolute inset-0 -m-2 bg-primary/10 rounded-lg"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
                     />
-                  </div>
-                  <span className={cn("text-xs font-medium", isActive && "font-semibold")}>
-                    {label}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
+                  )}
+                  <Icon
+                    className={cn("h-6 w-6 relative z-10 transition-transform", isActive && "scale-110")}
+                    strokeWidth={isActive ? 2.5 : 1.8}
+                  />
+                </div>
+                <span className={cn("text-xs font-medium", isActive && "font-semibold")}>
+                  {label}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </nav>
   );
-
-  // Render into document.body so no transformed ancestor (framer-motion, etc.)
-  // can turn `position: fixed` into `position: absolute` and let it scroll away.
-  if (!mounted) return null;
-  return createPortal(nav, document.body);
 }
