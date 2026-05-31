@@ -36,13 +36,23 @@ function parseExcelDate(value: ExcelJS.CellValue): string {
     return format(date, "yyyy-MM-dd");
   }
   if (typeof value === "string") {
-    const fmts = ["dd/MM/yyyy", "MM/dd/yyyy", "yyyy-MM-dd", "d MMM yyyy", "MMMM d, yyyy", "d/M/yyyy"];
+    // Pull a date-looking token out of strings like "יום שישי 20/06/2025"
+    const cleaned = value.trim();
+    const tokenMatch = cleaned.match(/\d{1,4}[.\/-]\d{1,2}[.\/-]\d{1,4}|\d{4}-\d{2}-\d{2}/);
+    const candidate = tokenMatch ? tokenMatch[0] : cleaned;
+    const fmts = [
+      "yyyy-MM-dd", "dd/MM/yyyy", "d/M/yyyy", "MM/dd/yyyy",
+      "dd.MM.yyyy", "d.M.yyyy", "dd.MM.yy", "d.M.yy",
+      "dd-MM-yyyy", "d-M-yyyy", "yyyy/MM/dd",
+      "d MMM yyyy", "MMMM d, yyyy",
+    ];
     for (const fmt of fmts) {
-      const parsed = parse(value, fmt, new Date());
+      const parsed = parse(candidate, fmt, new Date());
       if (isValid(parsed)) return format(parsed, "yyyy-MM-dd");
     }
   }
-  return String(value ?? "");
+  // Could not parse → empty so the caller can fall back to the previous row's date
+  return "";
 }
 
 function parseTime(value: ExcelJS.CellValue): string | undefined {
@@ -118,6 +128,7 @@ export async function parseExcelBuffer(
   const rows: ExcelRow[] = [];
 
   // Carry-forward values for blank (merged) cells
+  let lastDate = "";
   let lastCity = "";
   let lastDayNumber = 0;
 
@@ -165,11 +176,12 @@ export async function parseExcelBuffer(
 
     if (!hasData) return;
 
-    // Fill down merged/blank city + day number from the row above
+    // Fill down merged/blank date + city + day number from the row above
+    if (date) lastDate = date; else date = lastDate;
     if (city) lastCity = city; else city = lastCity;
     if (dayNumber) lastDayNumber = dayNumber; else dayNumber = lastDayNumber;
 
-    // A valid day needs a date. (City may be blank — we keep the day anyway.)
+    // Still no date even after carry-forward → skip (junk row before any real day)
     if (!date) return;
 
     const notes =
