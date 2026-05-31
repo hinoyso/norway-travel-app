@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useTripStore, Language } from "@/store/tripStore";
-import { Moon, Sun, Monitor, LogOut, Wifi, WifiOff, Upload, RefreshCw, Languages } from "lucide-react";
+import { Moon, Sun, Monitor, LogOut, Upload, Languages } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -100,7 +100,7 @@ function LanguageSelector() {
 export default function SettingsPage() {
   const { t } = useT();
   const router = useRouter();
-  const { clearStore, offlineMode, setOfflineMode } = useTripStore();
+  const { clearStore } = useTripStore();
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -162,53 +162,6 @@ export default function SettingsPage() {
               <Button asChild size="sm" variant="outline">
                 <Link href="/admin">{t.settings.upload}</Link>
               </Button>
-            }
-          />
-          <SettingRow
-            icon={<RefreshCw className="h-5 w-5 text-muted-foreground" />}
-            label={t.settings.clearCache}
-            description={t.settings.clearDesc}
-            action={
-              <Button size="sm" variant="outline" onClick={() => { clearStore(); window.location.reload(); }}>
-                {t.settings.clear}
-              </Button>
-            }
-          />
-        </motion.div>
-
-        {/* Offline */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.09 }}
-          className="bg-card border border-border rounded-2xl overflow-hidden"
-        >
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-4 pt-3 pb-0">
-            {t.settings.connectivity}
-          </p>
-          <SettingRow
-            icon={offlineMode
-              ? <WifiOff className="h-5 w-5 text-amber-500" />
-              : <Wifi className="h-5 w-5 text-emerald-500" />
-            }
-            label={t.settings.offlineMode}
-            description={offlineMode ? t.settings.offlineOn : t.settings.offlineOff}
-            action={
-              <button
-                role="switch"
-                aria-checked={offlineMode}
-                onClick={() => setOfflineMode(!offlineMode)}
-                className={cn(
-                  "relative inline-flex h-7 w-13 items-center rounded-full transition-colors",
-                  offlineMode ? "bg-primary" : "bg-muted"
-                )}
-                style={{ width: "52px" }}
-              >
-                <span className={cn(
-                  "inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform",
-                  offlineMode ? "translate-x-7" : "translate-x-1"
-                )} />
-              </button>
             }
           />
         </motion.div>
