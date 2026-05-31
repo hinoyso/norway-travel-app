@@ -117,9 +117,22 @@ export async function parseExcelBuffer(
 
   const rows: ExcelRow[] = [];
 
+  // Carry-forward values for blank (merged) cells
+  let lastCity = "";
+  let lastDayNumber = 0;
+
   worksheet.eachRow((row, rowNumber) => {
     if (rowNumber <= headerRowNumber) return;
-    const record: Partial<ExcelRow> & { _extra?: Record<string, string> } = {};
+
+    let date = "";
+    let city = "";
+    let dayNumber = 0;
+    let activityName = "";
+    let description = "";
+    let address = "";
+    let startTime: string | undefined;
+    let endTime: string | undefined;
+    const extra: Record<string, string> = {};
     let hasData = false;
 
     for (const [colIdx, field] of Object.entries(fieldMap)) {
@@ -128,34 +141,63 @@ export async function parseExcelBuffer(
       if (value !== null && value !== undefined && value !== "") hasData = true;
 
       if (field === "date") {
-        record.date = parseExcelDate(value);
-      } else if (field === "start_time" || field === "end_time") {
-        (record as Record<string, unknown>)[field] = parseTime(value);
+        date = parseExcelDate(value);
+      } else if (field === "start_time") {
+        startTime = parseTime(value);
+      } else if (field === "end_time") {
+        endTime = parseTime(value);
       } else if (field === "day_number") {
-        record.day_number = parseInt(String(value ?? "0")) || 0;
+        dayNumber = parseInt(String(value ?? "0")) || 0;
+      } else if (field === "city") {
+        city = cellText(cell).trim();
+      } else if (field === "activity_name") {
+        activityName = cellText(cell).trim();
+      } else if (field === "description") {
+        description = cellText(cell).trim();
+      } else if (field === "address") {
+        address = cellText(cell).trim();
       } else if (field.startsWith("notes_")) {
-        // Store structured extra columns — serialised as JSON into the notes field
-        const key = field.slice(6); // e.g. "restaurant", "driving", "km"
-        const newVal = cellText(cell).trim();
-        if (newVal) {
-          if (!record._extra) record._extra = {};
-          record._extra[key] = newVal;
-        }
-      } else {
-        (record as Record<string, unknown>)[field] = cellText(cell).trim();
+        const key = field.slice(6); // "restaurant" | "driving" | "km"
+        const v = cellText(cell).trim();
+        if (v) extra[key] = v;
       }
     }
 
     if (!hasData) return;
-    if (record.date && record.city) {
-      if (!record.activity_name) record.activity_name = record.city;
-      // Serialise structured extra data to notes as JSON
-      if (record._extra && Object.keys(record._extra).length > 0) {
-        record.notes = JSON.stringify(record._extra);
-      }
-      delete record._extra;
-      rows.push(record as ExcelRow);
-    }
+
+    // Fill down merged/blank city + day number from the row above
+    if (city) lastCity = city; else city = lastCity;
+    if (dayNumber) lastDayNumber = dayNumber; else dayNumber = lastDayNumber;
+
+    // A valid day needs a date. (City may be blank — we keep the day anyway.)
+    if (!date) return;
+
+    const notes =
+      Object.keys(extra).length > 0 ? JSON.stringify(extra) : undefined;
+
+    // Each line inside the activity cell is its own activity
+    const lines = activityName
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+    // No activity text → keep the day with a single placeholder activity (the city)
+    if (lines.length === 0) lines.push(city || "—");
+
+    lines.forEach((line, i) => {
+      rows.push({
+        date,
+        city,
+        day_number: dayNumber,
+        activity_name: line,
+        // Day-level details (hotel, restaurant, distances, description) attach to the first activity only
+        description: i === 0 ? description : "",
+        address: i === 0 ? address : "",
+        notes: i === 0 ? notes : undefined,
+        start_time: i === 0 ? startTime : undefined,
+        end_time: i === 0 ? endTime : undefined,
+      } as ExcelRow);
+    });
   });
 
   if (rows.length === 0) throw new Error("No valid rows found in the Excel file.");

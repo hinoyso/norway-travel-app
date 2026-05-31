@@ -11,6 +11,7 @@ type UploadState = "idle" | "dragging" | "uploading" | "success" | "error";
 interface UploadResult {
   trip_id: string;
   days: number;
+  activities?: number;
 }
 
 export function ExcelUploader() {
@@ -160,7 +161,7 @@ export function ExcelUploader() {
                   Itinerary uploaded!
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {result?.days} days imported — redirecting…
+                  {result?.days} days · {result?.activities ?? 0} activities imported — redirecting…
                 </p>
               </div>
             </motion.div>
