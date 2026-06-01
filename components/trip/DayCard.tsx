@@ -95,6 +95,12 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
               </div>
 
               <div className="flex-1 min-w-0">
+                {/* Location — top, larger */}
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 px-3 py-1.5 text-sm font-semibold max-w-full mb-2">
+                  <MapPin className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{day.city}</span>
+                </span>
+
                 {/* Date */}
                 <p className="font-bold text-lg text-foreground leading-tight tracking-tight">
                   {formatDate(day.date, "d MMM")}
@@ -103,16 +109,10 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
                   {getDayLabel(day.date)}
                 </p>
 
-                {/* Location + activity count chips */}
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 px-2.5 py-1 text-xs font-semibold max-w-full">
-                    <MapPin className="h-3 w-3 shrink-0" />
-                    <span className="truncate">{day.city}</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 px-2.5 py-1 text-xs font-semibold">
-                    {activityCount} {activityCount === 1 ? t.day.activity : t.day.activities}
-                  </span>
-                </div>
+                {/* Activity count */}
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 px-2.5 py-1 text-xs font-semibold">
+                  {activityCount} {activityCount === 1 ? t.day.activity : t.day.activities}
+                </span>
               </div>
             </div>
             <div className="mt-3">
