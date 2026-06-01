@@ -76,23 +76,20 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
             : isPastDay ? "bg-muted/40 border-border opacity-80"
             : "bg-card border-border/70"
         )}>
-          {isCurrentDay && (
-            <div className="absolute top-3 right-3 z-10">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold bg-emerald-500 text-white rounded-full px-2.5 py-1 shadow-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                {t.day.today}
-              </span>
-            </div>
-          )}
-
           {/* Main tap area → day detail */}
           <Link href={`/day/${day.id}`} className="block px-4 pt-4 pb-3">
-            {/* Location — pinned top-left, gray, no background */}
-            <div dir="ltr" className="flex items-center mb-3">
+            {/* Top row: location (left) + today pill (right) on the same line */}
+            <div dir="ltr" className="flex items-center justify-between gap-2 mb-3">
               <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-gray-400 min-w-0">
                 <MapPin className="h-4 w-4 shrink-0" />
                 <span className="truncate">{day.city}</span>
               </span>
+              {isCurrentDay && (
+                <span className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold bg-emerald-500 text-white rounded-full px-2.5 py-1 shadow-sm">
+                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                  {t.day.today}
+                </span>
+              )}
             </div>
 
             <div className="flex items-start gap-3.5">
