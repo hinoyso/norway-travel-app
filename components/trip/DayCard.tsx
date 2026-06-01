@@ -87,6 +87,14 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
 
           {/* Main tap area → day detail */}
           <Link href={`/day/${day.id}`} className="block px-4 pt-4 pb-3">
+            {/* Location — pinned top-left, gray, no background */}
+            <div dir="ltr" className="flex items-center mb-3">
+              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-gray-400 min-w-0">
+                <MapPin className="h-4 w-4 shrink-0" />
+                <span className="truncate">{day.city}</span>
+              </span>
+            </div>
+
             <div className="flex items-start gap-3.5">
               {/* Day number badge — rose gold */}
               <div className="shrink-0 h-14 w-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm bg-gradient-to-br from-[#E6B17E] via-[#D9908C] to-[#B76E79] text-white">
@@ -95,12 +103,6 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
               </div>
 
               <div className="flex-1 min-w-0">
-                {/* Location — top, larger */}
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 px-3 py-1.5 text-sm font-semibold max-w-full mb-2">
-                  <MapPin className="h-4 w-4 shrink-0" />
-                  <span className="truncate">{day.city}</span>
-                </span>
-
                 {/* Date */}
                 <p className="font-bold text-lg text-foreground leading-tight tracking-tight">
                   {formatDate(day.date, "d MMM")}
