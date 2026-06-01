@@ -78,34 +78,38 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
         )}>
           {/* Main tap area → day detail */}
           <Link href={`/day/${day.id}`} className="block px-4 pt-4 pb-3">
-            {/* Single line: location (left), day badge + date (centered), today pill (right) */}
-            <div className="relative flex items-center justify-center gap-3 min-h-[3.5rem]">
-              {/* Location pinned left */}
-              <span dir="ltr" className="absolute left-0 inset-y-0 flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-gray-400 max-w-[35%]">
-                <MapPin className="h-4 w-4 shrink-0" />
-                <span className="truncate">{day.city}</span>
-              </span>
-
-              {/* Today pill pinned right */}
-              {isCurrentDay && (
-                <span className="absolute right-0 top-1 inline-flex items-center gap-1 text-xs font-semibold bg-emerald-500 text-white rounded-full px-2.5 py-1 shadow-sm">
-                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                  {t.day.today}
+            {/* Single line: location (left) · day + date (center) · day badge (right) */}
+            <div dir="ltr" className="flex items-center gap-2 min-h-[3.5rem]">
+              {/* Left zone: location */}
+              <div className="flex-1 min-w-0 flex items-center">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-gray-400 min-w-0">
+                  <MapPin className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{day.city}</span>
                 </span>
-              )}
-
-              {/* Centered day badge + date */}
-              <div className="shrink-0 h-14 w-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm bg-gradient-to-br from-[#E6B17E] via-[#D9908C] to-[#B76E79] text-white">
-                <span className="text-[10px] font-medium uppercase tracking-wider opacity-90 leading-none [text-shadow:0_1px_1px_rgba(0,0,0,0.15)]">{t.day.day}</span>
-                <span className="text-2xl leading-none mt-0.5 [text-shadow:0_1px_2px_rgba(0,0,0,0.18)]">{day.day_number}</span>
               </div>
-              <div className="text-center">
+
+              {/* Center zone: today pill + date */}
+              <div className="shrink-0 text-center">
+                {isCurrentDay && (
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold bg-emerald-500 text-white rounded-full px-2.5 py-0.5 shadow-sm mb-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                    {t.day.today}
+                  </span>
+                )}
                 <p className="font-extrabold text-2xl text-foreground leading-tight tracking-tight">
                   {formatDate(day.date, "d MMM")}
                 </p>
                 <p className="text-sm font-medium text-muted-foreground">
                   {getDayLabel(day.date)}
                 </p>
+              </div>
+
+              {/* Right zone: rose-gold day badge */}
+              <div className="flex-1 flex justify-end">
+                <div className="shrink-0 h-14 w-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm bg-gradient-to-br from-[#E6B17E] via-[#D9908C] to-[#B76E79] text-white">
+                  <span className="text-[10px] font-medium uppercase tracking-wider opacity-90 leading-none [text-shadow:0_1px_1px_rgba(0,0,0,0.15)]">{t.day.day}</span>
+                  <span className="text-2xl leading-none mt-0.5 [text-shadow:0_1px_2px_rgba(0,0,0,0.18)]">{day.day_number}</span>
+                </div>
               </div>
             </div>
 
