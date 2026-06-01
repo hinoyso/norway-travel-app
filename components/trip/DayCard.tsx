@@ -71,94 +71,99 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
         transition={{ delay: index * 0.05, duration: 0.35, ease: "easeOut" }}
       >
         <div className={cn(
-          "relative rounded-3xl border overflow-hidden transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.10)]",
-          isCurrentDay ? "bg-card border-emerald-400/40 dark:border-emerald-500/30 ring-1 ring-emerald-400/20"
-            : isPastDay ? "bg-card border-border/50 opacity-75"
-            : "bg-card border-border/60"
+          "relative rounded-3xl border overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md",
+          isCurrentDay ? "bg-emerald-50/60 border-emerald-400/50 dark:bg-emerald-900/15 dark:border-emerald-500/40 ring-1 ring-emerald-400/25"
+            : isPastDay ? "bg-muted/40 border-border opacity-80"
+            : "bg-card border-border/70"
         )}>
           {/* Main tap area → day detail */}
-          <Link href={`/day/${day.id}`} dir="ltr" className="block p-4">
-            <div className="flex items-center gap-3.5">
-              {/* Day badge — slate / dark blue */}
-              <div className="shrink-0 h-[3.25rem] w-[3.25rem] rounded-2xl flex flex-col items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 dark:from-slate-600 dark:to-slate-800 text-white shadow-sm ring-1 ring-inset ring-white/10">
-                <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-white/55 leading-none">{t.day.day}</span>
-                <span className="text-[1.6rem] font-extrabold leading-none mt-0.5">{day.day_number}</span>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                {/* Date (primary) + today pill */}
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-extrabold text-xl text-foreground leading-tight tracking-tight truncate">
-                    {formatDate(day.date, "d MMM")}
-                    <span className="ms-1.5 text-sm font-medium text-muted-foreground">{getDayLabel(day.date)}</span>
-                  </h3>
-                  {isCurrentDay && (
-                    <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold bg-emerald-500 text-white rounded-full px-2 py-0.5 shadow-sm">
-                      <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                      {t.day.today}
-                    </span>
-                  )}
-                </div>
-
-                {/* City (secondary) — light blue */}
-                <div className="flex items-center gap-1.5 mt-1 text-[#5BA7FF] min-w-0">
+          <Link href={`/day/${day.id}`} className="block px-4 pt-4 pb-3">
+            {/* Single line: location (left) · day + date (center) · day badge (right) */}
+            <div dir="ltr" className="flex items-center gap-2 min-h-[3.5rem]">
+              {/* Left zone: location */}
+              <div className="flex-1 min-w-0 flex items-center">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#B8860B] dark:text-[#E6C35C] min-w-0">
                   <MapPin className="h-4 w-4 shrink-0" />
-                  <span className="text-sm font-semibold truncate">{day.city}</span>
-                </div>
+                  <span className="truncate">{day.city}</span>
+                </span>
+              </div>
 
-                {/* Meta (tertiary) — weather · activity count */}
-                <div className="flex items-center gap-2.5 mt-2.5">
-                  <WeatherCard city={day.city} date={day.date} compact />
-                  <span className="text-muted-foreground/30">·</span>
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {activityCount} {activityCount === 1 ? t.day.activity : t.day.activities}
+              {/* Center zone: today pill + date */}
+              <div className="shrink-0 text-center">
+                {isCurrentDay && (
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold bg-emerald-500 text-white rounded-full px-2.5 py-0.5 shadow-sm mb-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                    {t.day.today}
                   </span>
+                )}
+                <p className="font-extrabold text-2xl text-foreground leading-tight tracking-tight">
+                  {formatDate(day.date, "d MMM")}
+                </p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {getDayLabel(day.date)}
+                </p>
+              </div>
+
+              {/* Right zone: rose-gold day badge */}
+              <div className="flex-1 flex justify-end">
+                <div className="shrink-0 h-14 w-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm bg-gradient-to-br from-[#E6B17E] via-[#D9908C] to-[#B76E79] text-white">
+                  <span className="text-[10px] font-medium uppercase tracking-wider opacity-90 leading-none [text-shadow:0_1px_1px_rgba(0,0,0,0.15)]">{t.day.day}</span>
+                  <span className="text-2xl leading-none mt-0.5 [text-shadow:0_1px_2px_rgba(0,0,0,0.18)]">{day.day_number}</span>
                 </div>
               </div>
+            </div>
+
+            {/* Activity count — centered below */}
+            <div className="flex justify-center mt-3">
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 px-3 py-1 text-xs font-semibold">
+                {activityCount} {activityCount === 1 ? t.day.activity : t.day.activities}
+              </span>
+            </div>
+
+            <div className="mt-3">
+              <WeatherCard city={day.city} date={day.date} compact />
             </div>
           </Link>
 
           {/* Action buttons */}
-          <div className="px-4 pb-4 pt-0">
-            <div className="border-t border-border/50 -mx-4 mb-3" />
+          <div className="px-4 pb-4">
             <AnimatePresence mode="wait">
               {confirmDelete ? (
                 <motion.div
                   key="confirm"
                   initial={{ opacity: 0, scale: 0.97 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex items-center gap-2 bg-rose-50 dark:bg-rose-950/30 rounded-xl p-3 border border-rose-200/70 dark:border-rose-900/50"
+                  className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 rounded-xl p-3 border border-red-200 dark:border-red-800/40"
                 >
-                  <p className="flex-1 text-sm font-semibold text-rose-600 dark:text-rose-300">
+                  <p className="flex-1 text-sm font-semibold text-red-700 dark:text-red-400">
                     {t.crud.confirmDelete}
                   </p>
                   <button
                     onClick={() => setConfirmDelete(false)}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-muted text-muted-foreground text-sm font-medium active:scale-95 transition-transform"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-muted text-muted-foreground text-sm font-medium"
                   >
                     <X className="h-3.5 w-3.5" /> {t.crud.no}
                   </button>
                   <button
                     onClick={handleDeleteDay}
                     disabled={deleting}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500 text-white text-sm font-semibold active:scale-95 transition-transform"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-600 text-white text-sm font-semibold"
                   >
                     <Check className="h-3.5 w-3.5" /> {deleting ? "…" : t.crud.yes}
                   </button>
                 </motion.div>
               ) : (
-                <motion.div key="actions" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2.5">
+                <motion.div key="actions" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2">
                   <button
                     onClick={openEdit}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600/10 text-blue-600 dark:text-blue-400 text-sm font-semibold ring-1 ring-inset ring-blue-600/20 hover:bg-blue-600/15 active:scale-[0.97] transition-all"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold shadow-sm hover:opacity-90 active:scale-95 transition-all"
                   >
                     <Pencil className="h-4 w-4" />
                     {t.crud.edit}
                   </button>
                   <button
                     onClick={() => setConfirmDelete(true)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 text-sm font-semibold ring-1 ring-inset ring-rose-500/20 hover:bg-rose-500/15 active:scale-[0.97] transition-all"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-500 text-white text-sm font-semibold shadow-sm hover:opacity-90 active:scale-95 transition-all"
                   >
                     <Trash2 className="h-4 w-4" />
                     {t.crud.delete}
