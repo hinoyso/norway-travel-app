@@ -82,7 +82,7 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
             <div dir="ltr" className="flex items-center gap-2 min-h-[3.5rem]">
               {/* Left zone: location */}
               <div className="flex-1 min-w-0 flex items-center">
-                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#5BA7FF] dark:text-[#6EC1FF] min-w-0">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#B08968] dark:text-[#D2B48C] min-w-0">
                   <MapPin className="h-4 w-4 shrink-0" />
                   <span className="truncate">{day.city}</span>
                 </span>
