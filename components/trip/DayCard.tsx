@@ -72,13 +72,13 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
       >
         <div className={cn(
           "relative rounded-3xl border overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md",
-          isCurrentDay ? "bg-primary/5 border-primary/40 dark:bg-primary/10 ring-1 ring-primary/20"
+          isCurrentDay ? "bg-emerald-50/60 border-emerald-400/50 dark:bg-emerald-900/15 dark:border-emerald-500/40 ring-1 ring-emerald-400/25"
             : isPastDay ? "bg-muted/40 border-border opacity-80"
             : "bg-card border-border/70"
         )}>
           {isCurrentDay && (
             <div className="absolute top-3 right-3 z-10">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold bg-primary text-primary-foreground rounded-full px-2.5 py-1">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold bg-emerald-500 text-white rounded-full px-2.5 py-1 shadow-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
                 {t.day.today}
               </span>
@@ -89,13 +89,8 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
           <Link href={`/day/${day.id}`} className="block px-4 pt-4 pb-3">
             <div className="flex items-start gap-3.5">
               {/* Day number badge */}
-              <div className={cn(
-                "shrink-0 h-14 w-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm",
-                isCurrentDay
-                  ? "bg-gradient-to-br from-primary to-norway-fjord text-white"
-                  : "bg-gradient-to-br from-secondary to-muted text-primary"
-              )}>
-                <span className="text-[10px] font-medium uppercase tracking-wider opacity-70 leading-none">{t.day.day}</span>
+              <div className="shrink-0 h-14 w-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+                <span className="text-[10px] font-medium uppercase tracking-wider opacity-80 leading-none">{t.day.day}</span>
                 <span className="text-2xl leading-none mt-0.5">{day.day_number}</span>
               </div>
 
@@ -110,7 +105,7 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
 
                 {/* Location + activity count chips */}
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-xs font-semibold max-w-full">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 px-2.5 py-1 text-xs font-semibold max-w-full">
                     <MapPin className="h-3 w-3 shrink-0" />
                     <span className="truncate">{day.city}</span>
                   </span>
