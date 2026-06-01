@@ -65,6 +65,13 @@
     overscroll-behavior: none;
     /* iOS momentum scrolling */
     -webkit-overflow-scrolling: touch;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Tighter, more modern headings */
+  h1, h2, h3 {
+    letter-spacing: -0.015em;
   }
 
   /* Remove number input arrows */

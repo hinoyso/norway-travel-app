@@ -71,10 +71,10 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
         transition={{ delay: index * 0.05, duration: 0.35, ease: "easeOut" }}
       >
         <div className={cn(
-          "relative rounded-2xl border overflow-hidden transition-all duration-200",
-          isCurrentDay ? "bg-primary/5 border-primary/30 dark:bg-primary/10"
-            : isPastDay ? "bg-muted/50 border-border opacity-80"
-            : "bg-card border-border"
+          "relative rounded-3xl border overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md",
+          isCurrentDay ? "bg-primary/5 border-primary/40 dark:bg-primary/10 ring-1 ring-primary/20"
+            : isPastDay ? "bg-muted/40 border-border opacity-80"
+            : "bg-card border-border/70"
         )}>
           {isCurrentDay && (
             <div className="absolute top-3 right-3 z-10">
@@ -87,26 +87,37 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
 
           {/* Main tap area → day detail */}
           <Link href={`/day/${day.id}`} className="block px-4 pt-4 pb-3">
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3.5">
+              {/* Day number badge */}
               <div className={cn(
-                "shrink-0 h-12 w-12 rounded-xl flex flex-col items-center justify-center font-bold",
-                isCurrentDay ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+                "shrink-0 h-14 w-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm",
+                isCurrentDay
+                  ? "bg-gradient-to-br from-primary to-norway-fjord text-white"
+                  : "bg-gradient-to-br from-secondary to-muted text-primary"
               )}>
-                <span className="text-xs opacity-70 leading-none">{t.day.day}</span>
-                <span className="text-xl leading-none">{day.day_number}</span>
+                <span className="text-[10px] font-medium uppercase tracking-wider opacity-70 leading-none">{t.day.day}</span>
+                <span className="text-2xl leading-none mt-0.5">{day.day_number}</span>
               </div>
+
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-base text-foreground leading-snug">
-                  {getDayLabel(day.date)},{" "}
-                  <span className="font-normal text-muted-foreground">{formatDate(day.date, "d MMM")}</span>
+                {/* Date */}
+                <p className="font-bold text-lg text-foreground leading-tight tracking-tight">
+                  {formatDate(day.date, "d MMM")}
                 </p>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-0.5">
-                  <MapPin className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">{day.city}</span>
+                <p className="text-xs font-medium text-muted-foreground mb-2">
+                  {getDayLabel(day.date)}
+                </p>
+
+                {/* Location + activity count chips */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-xs font-semibold max-w-full">
+                    <MapPin className="h-3 w-3 shrink-0" />
+                    <span className="truncate">{day.city}</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted text-muted-foreground px-2.5 py-1 text-xs font-medium">
+                    {activityCount} {activityCount === 1 ? t.day.activity : t.day.activities}
+                  </span>
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {activityCount} {activityCount === 1 ? t.day.activity : t.day.activities}
-                </p>
               </div>
             </div>
             <div className="mt-3">

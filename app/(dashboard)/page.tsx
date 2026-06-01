@@ -111,13 +111,19 @@ export default function HomePage() {
 
       <EmergencyCard />
 
-      <div className="px-4 mt-4">
+      <div className="px-4 mt-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-bold text-lg text-foreground flex items-center gap-2">
-            <CalendarDays className="h-5 w-5 text-primary" />
-            {t.home.yourItinerary}
-          </h2>
-          <span className="text-sm text-muted-foreground">{days.length} {t.hero.days}</span>
+          <div className="flex items-center gap-2.5">
+            <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center">
+              <CalendarDays className="h-5 w-5 text-primary" />
+            </div>
+            <h2 className="font-extrabold text-xl text-foreground tracking-tight">
+              {t.home.yourItinerary}
+            </h2>
+          </div>
+          <span className="inline-flex items-center rounded-full bg-primary/10 text-primary px-3 py-1.5 text-sm font-bold">
+            {days.length} {t.hero.days}
+          </span>
         </div>
 
         <div className="space-y-3">

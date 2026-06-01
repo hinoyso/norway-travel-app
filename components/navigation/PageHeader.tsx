@@ -41,9 +41,9 @@ export function PageHeader({
           </button>
         )}
         <div className="flex-1 min-w-0">
-          <h1 className="font-bold text-lg leading-tight truncate">{title}</h1>
+          <h1 className="font-extrabold text-xl leading-tight tracking-tight truncate">{title}</h1>
           {subtitle && (
-            <p className="text-xs text-muted-foreground truncate">{subtitle}</p>
+            <p className="text-xs font-medium text-muted-foreground truncate mt-0.5">{subtitle}</p>
           )}
         </div>
         {rightAction && <div className="shrink-0">{rightAction}</div>}

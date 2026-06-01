@@ -95,7 +95,7 @@ const config: Config = {
         slideUp: "slideUp 0.5s ease-out forwards",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       spacing: {
         "safe-bottom": "env(safe-area-inset-bottom)",

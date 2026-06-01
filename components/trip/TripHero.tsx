@@ -39,10 +39,10 @@ export function TripHero({ trip, days }: TripHeroProps) {
         {/* Trip name + destination */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div>
-            <p className="text-white/60 text-xs uppercase tracking-widest font-medium mb-1">
+            <p className="text-white/70 text-xs uppercase tracking-[0.2em] font-semibold mb-1.5">
               {t.hero.yourJourney}
             </p>
-            <h1 className="font-bold text-2xl leading-tight text-balance">{trip.name}</h1>
+            <h1 className="font-extrabold text-3xl leading-[1.1] text-balance">{trip.name}</h1>
           </div>
           <div className="flex items-center gap-1.5 bg-white/10 rounded-xl px-3 py-1.5 shrink-0">
             <MapPin className="h-3.5 w-3.5" />
