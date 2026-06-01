@@ -16,7 +16,7 @@ export function WeatherCard({ city, date, compact = false }: WeatherCardProps) {
   const { t } = useT();
 
   if (loading) {
-    return <Skeleton className={compact ? "h-14 w-48 rounded-2xl" : "h-24 w-full rounded-2xl"} />;
+    return <Skeleton className={compact ? "h-4 w-28 rounded-md" : "h-24 w-full rounded-2xl"} />;
   }
 
   if (!weather) return null;
@@ -24,22 +24,20 @@ export function WeatherCard({ city, date, compact = false }: WeatherCardProps) {
   const info = getWeatherInfo(weather.weather_code);
 
   if (compact) {
+    // Slim, border-less inline weather — integrates into a meta row
     return (
-      <div className="flex items-center gap-2 bg-sky-50 dark:bg-sky-900/20 rounded-2xl px-3 py-2 border border-sky-100 dark:border-sky-800/30">
-        <span className="text-2xl" role="img" aria-label={info.label}>{info.icon}</span>
-        <div>
-          <p className="font-semibold text-sm text-foreground">
-            {weather.temperature_max}° / {weather.temperature_min}°C
-          </p>
-          <p className="text-xs text-muted-foreground">{info.label}</p>
-        </div>
+      <span className="inline-flex items-center gap-1.5 min-w-0">
+        <span className="text-base leading-none" role="img" aria-label={info.label}>{info.icon}</span>
+        <span className="text-xs font-semibold text-foreground">
+          {weather.temperature_max}°<span className="font-normal text-muted-foreground">/{weather.temperature_min}°</span>
+        </span>
         {weather.precipitation_probability > 20 && (
-          <div className="flex items-center gap-0.5 text-xs text-sky-600 dark:text-sky-400 ml-auto">
+          <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-sky-500 dark:text-sky-400">
             <Droplets className="h-3 w-3" />
-            <span>{weather.precipitation_probability}%</span>
-          </div>
+            {weather.precipitation_probability}%
+          </span>
         )}
-      </div>
+      </span>
     );
   }
 
