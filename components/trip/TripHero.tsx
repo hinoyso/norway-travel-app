@@ -25,7 +25,7 @@ export function TripHero({ trip, days }: TripHeroProps) {
     : null;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-norway-blue via-norway-fjord to-[#881337] text-white mx-4 mb-4">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-norway-blue via-norway-fjord to-[#1a3a6b] text-white mx-4 mb-4">
       {/* Decorative aurora overlay */}
       <div
         className="absolute inset-0 opacity-20"

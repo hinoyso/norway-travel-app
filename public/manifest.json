@@ -4,8 +4,8 @@
   "description": "Your personal Norway travel companion",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFF5F7",
-  "theme_color": "#E11D48",
+  "background_color": "#F8FBFF",
+  "theme_color": "#1B4F8A",
   "orientation": "portrait",
   "icons": [
     { "src": "/icons/icon-72x72.png", "sizes": "72x72", "type": "image/png" },

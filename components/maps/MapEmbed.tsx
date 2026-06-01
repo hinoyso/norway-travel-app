@@ -113,7 +113,7 @@ export function MapEmbed({ activities, height = "280px", zoom = 13 }: MapEmbedPr
         new google.maps.Polyline({
           path: coords,
           geodesic: true,
-          strokeColor: "#E11D48",
+          strokeColor: "#1B4F8A",
           strokeOpacity: 0.5,
           strokeWeight: 3,
           map,
