@@ -96,8 +96,9 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
                     {t.day.today}
                   </span>
                 )}
-                <p className="font-extrabold text-2xl text-foreground leading-tight tracking-tight">
-                  {formatDate(day.date, "d MMM")}
+                <p dir="ltr" className="font-extrabold text-2xl text-foreground leading-tight tracking-tight flex items-baseline justify-center gap-1.5">
+                  <span>{formatDate(day.date, "d")}</span>
+                  <span>{formatDate(day.date, "MMM")}</span>
                 </p>
                 <p className="text-sm font-medium text-muted-foreground">
                   {getDayLabel(day.date)}
