@@ -15,8 +15,8 @@ const COLUMN_MAP: Record<string, string> = {
   // Hebrew — standard fields
   "תאריך": "date",
   "עיר": "city",
-  "תיאור": "activity_name",
-  "נקודות עצירה": "description",
+  "נקודות עצירה": "activity_name",
+  "תיאור": "description",
   "יום מס'": "day_number",
   "מלון": "address",
   // Hebrew — extra info stored as structured JSON in notes
@@ -187,13 +187,20 @@ export async function parseExcelBuffer(
     const notes =
       Object.keys(extra).length > 0 ? JSON.stringify(extra) : undefined;
 
-    // Each line inside the activity cell is its own activity
-    const lines = activityName
+    // Activity names come from נקודות עצירה (activity_name). Each line = one activity.
+    let lines = activityName
       .split(/\r?\n/)
       .map((l) => l.trim())
       .filter(Boolean);
 
-    // No activity text → keep the day with a single placeholder activity (the city)
+    // Fallback: if נקודות עצירה is empty but תיאור (description) has content,
+    // use the description lines as the activities instead (so the day isn't reduced to one).
+    if (lines.length === 0 && description) {
+      lines = description.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+      description = ""; // moved into activity names; no separate description
+    }
+
+    // Still nothing → keep the day with a single placeholder activity (the city)
     if (lines.length === 0) lines.push(city || "—");
 
     lines.forEach((line, i) => {

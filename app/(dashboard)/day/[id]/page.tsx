@@ -37,7 +37,10 @@ export default function DayPage({ params }: { params: Promise<{ id: string }> })
       .then(({ data }) => { if (data) setDay(data as TripDay); setLoadingDay(false); });
   }, [id, days]);
 
-  const activitiesKey = activities.map((a) => a.id).join(",");
+  // Include editable content (not just IDs) so edits re-render the timeline
+  const activitiesKey = JSON.stringify(
+    activities.map((a) => [a.id, a.name, a.description, a.address, a.notes, a.start_time, a.end_time, a.category])
+  );
   useEffect(() => {
     setOptimizedOrder(activities);
     // eslint-disable-next-line react-hooks/exhaustive-deps
