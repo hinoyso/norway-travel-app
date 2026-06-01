@@ -35,7 +35,7 @@ function EmergencyCard() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-      className="mx-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-2xl overflow-hidden"
+      className="mx-4 bg-card border border-border rounded-2xl overflow-hidden shadow-sm"
     >
       <button
         onClick={() => setOpen(!open)}
@@ -43,15 +43,15 @@ function EmergencyCard() {
       >
         <div className="flex items-center gap-2">
           <Phone className="h-4 w-4 text-red-600" />
-          <span className="font-semibold text-sm text-red-700 dark:text-red-400">{t.emergency.title}</span>
+          <span className="font-semibold text-sm text-foreground">{t.emergency.title}</span>
         </div>
-        {open ? <ChevronUp className="h-4 w-4 text-red-500" /> : <ChevronDown className="h-4 w-4 text-red-500" />}
+        {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
       </button>
       {open && (
-        <div className="px-4 pb-4 space-y-2 border-t border-red-200 dark:border-red-800/30 pt-3">
+        <div className="px-4 pb-4 space-y-2 border-t border-border pt-3">
           {numbers.map(({ label, number, color }) => (
             <a key={number} href={`tel:${number.replace(/\s/g, "")}`}
-              className="flex items-center justify-between bg-white dark:bg-red-900/30 rounded-xl px-3 py-2.5"
+              className="flex items-center justify-between bg-muted/50 rounded-xl px-3 py-2.5"
             >
               <span className="text-sm text-foreground">{label}</span>
               <span className={`font-bold text-base ${color}`}>{number}</span>
