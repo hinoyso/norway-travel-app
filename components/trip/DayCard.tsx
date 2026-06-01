@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { TripDay } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { isToday, isPast, parseISO } from "date-fns";
+import { isToday, isPast, parseISO, differenceInDays } from "date-fns";
 import { MapPin, Pencil, Trash2, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WeatherCard } from "@/components/weather/WeatherCard";
@@ -23,7 +23,7 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
   const { t } = useT();
   const getDayLabel = useDayLabel();
   const formatDate = useFormatDate();
-  const { updateDay, deleteDay } = useTripStore();
+  const { updateDay, deleteDay, days } = useTripStore();
   const isCurrentDay = isToday(parseISO(day.date));
   const isPastDay = isPast(parseISO(day.date)) && !isCurrentDay;
 
@@ -31,25 +31,40 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [editCity, setEditCity] = useState(day.city);
   const [editDayNum, setEditDayNum] = useState(String(day.day_number));
+  const [editDate, setEditDate] = useState(day.date);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  // The earliest day in the trip is "Day 1" — used to sync the day number to a date
+  function dayNumberForDate(dateStr: string): number {
+    if (!dateStr || days.length === 0) return day.day_number;
+    const anchor = days.reduce((min, d) => (d.date < min ? d.date : min), days[0].date);
+    const n = differenceInDays(parseISO(dateStr), parseISO(anchor)) + 1;
+    return n > 0 ? n : 1;
+  }
 
   function openEdit() {
     setEditCity(day.city);
     setEditDayNum(String(day.day_number));
+    setEditDate(day.date);
     setEditOpen(true);
   }
 
+  function handleDateChange(newDate: string) {
+    setEditDate(newDate);
+    if (newDate) setEditDayNum(String(dayNumberForDate(newDate)));
+  }
+
   async function handleSaveDay() {
-    if (!editCity.trim()) return;
+    if (!editCity.trim() || !editDate) return;
     setSaving(true);
     const supabase = createClient();
     const newDayNum = parseInt(editDayNum) || day.day_number;
     await supabase
       .from("trip_days")
-      .update({ city: editCity.trim(), day_number: newDayNum })
+      .update({ city: editCity.trim(), day_number: newDayNum, date: editDate })
       .eq("id", day.id);
-    updateDay({ ...day, city: editCity.trim(), day_number: newDayNum });
+    updateDay({ ...day, city: editCity.trim(), day_number: newDayNum, date: editDate });
     setSaving(false);
     setEditOpen(false);
   }
@@ -179,7 +194,19 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
       {/* Edit day sheet */}
       <BottomSheet open={editOpen} onClose={() => setEditOpen(false)} title={t.crud.editDay}>
         <div className="space-y-4">
-          {/* Day number */}
+          {/* Date — changing it auto-syncs the day number */}
+          <div>
+            <label className="text-sm font-semibold text-foreground block mb-1.5">
+              {t.crud.date}
+            </label>
+            <input
+              type="date"
+              value={editDate}
+              onChange={(e) => handleDateChange(e.target.value)}
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+          {/* Day number (auto-synced from the date, still editable) */}
           <div>
             <label className="text-sm font-semibold text-foreground block mb-1.5">
               {t.day.day}
@@ -208,7 +235,7 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
             <Button variant="outline" size="lg" className="flex-1 text-base" onClick={() => setEditOpen(false)}>
               {t.crud.cancel}
             </Button>
-            <Button size="lg" className="flex-1 text-base" onClick={handleSaveDay} disabled={saving || !editCity.trim()}>
+            <Button size="lg" className="flex-1 text-base" onClick={handleSaveDay} disabled={saving || !editCity.trim() || !editDate}>
               {saving ? "…" : t.crud.save}
             </Button>
           </div>
