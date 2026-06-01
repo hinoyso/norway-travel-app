@@ -88,10 +88,10 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
           {/* Main tap area → day detail */}
           <Link href={`/day/${day.id}`} className="block px-4 pt-4 pb-3">
             <div className="flex items-start gap-3.5">
-              {/* Day number badge */}
-              <div className="shrink-0 h-14 w-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
-                <span className="text-[10px] font-medium uppercase tracking-wider opacity-80 leading-none">{t.day.day}</span>
-                <span className="text-2xl leading-none mt-0.5">{day.day_number}</span>
+              {/* Day number badge — rose gold */}
+              <div className="shrink-0 h-14 w-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm bg-gradient-to-br from-[#E6B17E] via-[#D9908C] to-[#B76E79] text-white">
+                <span className="text-[10px] font-medium uppercase tracking-wider opacity-90 leading-none [text-shadow:0_1px_1px_rgba(0,0,0,0.15)]">{t.day.day}</span>
+                <span className="text-2xl leading-none mt-0.5 [text-shadow:0_1px_2px_rgba(0,0,0,0.18)]">{day.day_number}</span>
               </div>
 
               <div className="flex-1 min-w-0">
@@ -109,7 +109,7 @@ export function DayCard({ day, activityCount = 0, index = 0 }: DayCardProps) {
                     <MapPin className="h-3 w-3 shrink-0" />
                     <span className="truncate">{day.city}</span>
                   </span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-muted text-muted-foreground px-2.5 py-1 text-xs font-medium">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 px-2.5 py-1 text-xs font-semibold">
                     {activityCount} {activityCount === 1 ? t.day.activity : t.day.activities}
                   </span>
                 </div>
